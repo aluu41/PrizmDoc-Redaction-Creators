@@ -1,0 +1,321 @@
+{
+	"info": {
+		"_postman_id": "3d621311-1a7f-429e-aa11-5e69d0fa97a0",
+		"name": "PrizmDoc Postman Redaction Creators Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Create a Work File",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"fileId\", jsonData.fileId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "file",
+					"file": {
+						"src": ""
+					}
+				},
+				"url": {
+					"raw": "http://warroom-pc10:18681/PCCIS/V1/WorkFile",
+					"protocol": "http",
+					"host": [
+						"warroom-pc10"
+					],
+					"port": "18681",
+					"path": [
+						"PCCIS",
+						"V1",
+						"WorkFile"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Redaction Creator",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"processId\", jsonData.processId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"input\": {\r\n    \"source\": {\r\n      \"fileId\": \"{{fileId}}\"\r\n    },\r\n    \"rules\": [{\r\n        \"find\": {\r\n          \"type\": \"regex\",\r\n          \"pattern\": \".*\"\r\n        },\r\n        \"redactWith\": {\r\n          \"type\": \"RectangleRedaction\"\r\n        }\r\n      }\r\n      \r\n      \r\n    ]}\r\n  \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://warroom-pc10:18681/v2/redactionCreators",
+					"protocol": "http",
+					"host": [
+						"warroom-pc10"
+					],
+					"port": "18681",
+					"path": [
+						"v2",
+						"redactionCreators"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Get State of Redaction Creator Process",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"markupFileId\", jsonData.output.markupFileId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://warroom-pc10:18681/v2/redactionCreators/{{processId}}",
+					"protocol": "http",
+					"host": [
+						"warroom-pc10"
+					],
+					"port": "18681",
+					"path": [
+						"v2",
+						"redactionCreators",
+						"{{processId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Create a MarkupBurner",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"processId\", jsonData.processId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"input\": {\r\n        \"documentFileId\": \"{{fileId}}\",\r\n        \"markupFileId\": \"{{markupFileId}}\"\r\n    },\r\n    \"minSecondsAvailable\": 60\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://warroom-pc10:18681/PCCIS/V1/MarkupBurner",
+					"protocol": "http",
+					"host": [
+						"warroom-pc10"
+					],
+					"port": "18681",
+					"path": [
+						"PCCIS",
+						"V1",
+						"MarkupBurner"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. Check the status of the MarkupBurner",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"documentFileId\", jsonData.output.documentFileId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://warroom-pc10:18681/PCCIS/V1/MarkupBurner/{{processId}}",
+					"protocol": "http",
+					"host": [
+						"warroom-pc10"
+					],
+					"port": "18681",
+					"path": [
+						"PCCIS",
+						"V1",
+						"MarkupBurner",
+						"{{processId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7. Get Document",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"input\": {\r\n    \"source\": {\r\n      \"fileId\": \"kQI4KJLwixSiHFra6olP5g\"\r\n    },\r\n    \"rules\": [{\r\n        \"find\": {\r\n          \"type\": \"regex\",\r\n          \"pattern\": \"wat\"\r\n        },\r\n        \"redactWith\": {\r\n          \"type\": \"RectangleRedaction\"\r\n        }\r\n      },\r\n      {\r\n        \"find\": {\r\n          \"type\": \"regex\",\r\n          \"pattern\": \"[0-9]{3}[-]?[0-9]{2}[-]?[0-9]{4}\"\r\n        },\r\n        \"redactWith\": {\r\n          \"type\": \"RectangleRedaction\",\r\n          \"borderColor\": \"#FF0000\",\r\n          \"fillColor\": \"#FF0000\",\r\n          \"fontColor\": \"#000000\",\r\n          \"reason\": \"Redacted\",\r\n          \"data\": {\r\n            \"author\": \"John Smith\",\r\n            \"phone\": \"+1 123 456 789\"\r\n          }\r\n        }\r\n      }\r\n    ]\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://warroom-pc10:18681/PCCIS/V1/WorkFile/{{documentFileId}}",
+					"protocol": "http",
+					"host": [
+						"warroom-pc10"
+					],
+					"port": "18681",
+					"path": [
+						"PCCIS",
+						"V1",
+						"WorkFile",
+						"{{documentFileId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "markupFileId",
+			"value": ""
+		},
+		{
+			"key": "viewingSessionId",
+			"value": ""
+		},
+		{
+			"key": "fileId",
+			"value": ""
+		},
+		{
+			"key": "processId",
+			"value": ""
+		},
+		{
+			"key": "documentFileId",
+			"value": ""
+		}
+	]
+}
